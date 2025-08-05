@@ -61,4 +61,39 @@ ax2.set_title('IBM RSI')
 
 plt.show()
 
-    
+# Impliment Strategy
+
+def rsi_strategy(prices, rsi):
+    buy_price = []
+    sell_price = []
+    rsi_signal = []
+    signal = 0
+
+    for i in range(len(rsi)):
+        if rsi[i-1] > 30 and rsi[i] < 30:
+            if signal != 1:
+                buy_price.append(prices[i])
+                sell_price.append(np.nan)
+                signal = 1
+                rsi_signal.append(signal)
+            else:
+                buy_price.append(np.nan)
+                sell_price.append(np.nan)
+                rsi_signal.append(0)
+        elif rsi[i-1] < 70 and rsi[i] > 70:
+            if signal != -1:
+                buy_price.append(np.nan)
+                sell_price.append(np.nan)
+                signal = -1
+                rsi_signal.append(signal)
+            else:
+                buy_price.append(np.nan)
+                sell_price.append( np.nan)
+                rsi_signal.append(0)            
+        else:
+            buy_price.append(np.nan)
+            sell_price.append(np.nan)
+            rsi_signal.append(0)
+    return buy_price, sell_price, rsi_signal
+
+buy_price, sell_price, rsi_signal = rsi_strategy(ibm['close'], ibm['rsi_14'])
