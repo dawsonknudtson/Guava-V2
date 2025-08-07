@@ -128,4 +128,27 @@ strategy = pd.concat(frames, join='inner', axis=1)
 
 strategy 
 
-# Back Testing
+# BackTesting
+
+ibm_ret = pd.DataFrame(np.diff(ibm['close'])).rename(columns = {0 : 'returns'})
+rsi_strategy_ret = []
+
+for i in range(len(ibm_ret)):
+    returns = ibm_ret['returns'][i] * strategy['rsi_position'][i]
+    rsi_strategy_ret.append(returns)
+
+rsi_strategy_ret_df = pd.DataFrame(rsi_strategy_ret).rename(columns = {0 : 'rsi_strategy_returns'})
+investment_value = 100000
+rsi_investment_ret = []
+
+for i in range(len(rsi_strategy_ret_df['rsi_returns'])):
+    number_of_stocks = floor(investment_value / ibm['close'][i])
+    returns = number_of_stocks * rsi_strategy_ret_df['rsi_strategy_returns'][i]
+    rsi_investment_ret.append(returns)
+
+rsi_investment_ret_df = pd.DataFrame(rsi_investment_ret).rename(columns = {0 : 'rsi_investment_returns'})
+total_investment_ret = round(sum(rsi_investment_ret_df['rsi_investment_returns']), 2) 
+profit_percentage = floor((total_investment_ret / investment_value) * 100)
+
+print(cl('Profit gained from the RSI strategy by investing $100k in IBM : {}'.format(total_investment_ret), attrs = ['bold']))
+print(cl('Profit percentage of the RSI strategy : {}%'.format(profit_percentage), attrs = ['bold']))
