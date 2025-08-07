@@ -97,3 +97,35 @@ def rsi_strategy(prices, rsi):
     return buy_price, sell_price, rsi_signal
 
 buy_price, sell_price, rsi_signal = rsi_strategy(ibm['close'], ibm['rsi_14'])
+
+# Plotting Signals (Do Later)
+
+# Position Sizing 
+
+position = []
+for i in range(len(rsi_signal)):
+    if rsi_signal[i] > 1:
+        position.append(0)
+    else:
+        position.append(0)
+
+for i in range(len(ibm['close'])):
+    if rsi_signal[i] == 1:
+        position[i] = 1
+    elif rsi_signal[i] == -1:
+        position[i] = 0
+    else:
+        position[i] = position[i-1]
+
+rsi  = ibm['rsi_14']
+close_price = ibm['close']    
+
+rsi_signal = pd.DataFrame(rsi_signal).reanme(columns = {0:'rsi_signal'}).set_index(ibm.index)
+position = pd.DataFrame(position).rename(columns = {0:'rsi_position'}).set_index(ibm.index)
+
+frames = [close_price, rsi, rsi_signal, position]
+strategy = pd.concat(frames, join='inner', axis=1)
+
+strategy 
+
+# Back Testing
